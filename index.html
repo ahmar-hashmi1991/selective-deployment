@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Microservices Deployment</title>
+    <style>
+      /* Add some basic styling */
+      label {
+        display: block;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Select Microservices to Deploy</h1>
+    <form id="microservicesForm">
+      <label
+        ><input type="checkbox" name="service" value="redis" /> Redis</label
+      >
+      <label
+        ><input type="checkbox" name="service" value="nginx" /> Nginx</label
+      >
+      <!-- Add more checkboxes for other microservices -->
+      <button type="button" onclick="deployMicroservices()">
+        Deploy Microservices
+      </button>
+    </form>
+
+    <script>
+      function deployMicroservices() {
+        var selectedServices = Array.from(
+          document.querySelectorAll('input[name="service"]:checked')
+        ).map((service) => service.value);
+        // Send selected services to backend for deployment
+        fetch("/deploy", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ services: selectedServices }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              alert("Microservices deployed successfully!");
+            } else {
+              alert("Error deploying microservices");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("Error deploying microservices");
+          });
+      }
+    </script>
+  </body>
+</html>

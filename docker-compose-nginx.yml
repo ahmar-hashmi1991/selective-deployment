@@ -1,0 +1,6 @@
+version: '3'
+services:
+  nginx:
+    image: nginx
+    ports:
+      - "80:80"  # Map container port 80 to host port 80
