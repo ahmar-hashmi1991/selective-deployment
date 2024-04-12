@@ -22,6 +22,15 @@
         ><input type="checkbox" name="service" value="nginx" /> Nginx</label
       >
       <!-- Add more checkboxes for other microservices -->
+
+      <!-- Server credentials input fields -->
+      <label for="serverHost">Server Host:</label>
+      <input type="text" id="serverHost" name="serverHost" />
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" />
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" />
+
       <button type="button" onclick="deployMicroservices()">
         Deploy Microservices
       </button>
@@ -32,13 +41,22 @@
         var selectedServices = Array.from(
           document.querySelectorAll('input[name="service"]:checked')
         ).map((service) => service.value);
-        // Send selected services to backend for deployment
+        var serverHost = document.getElementById("serverHost").value;
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+        // Send selected services and server credentials to backend for deployment
         fetch("/deploy", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ services: selectedServices }),
+          body: JSON.stringify({
+            services: selectedServices,
+            serverHost: serverHost,
+            username: username,
+            password: password,
+          }),
         })
           .then((response) => {
             if (response.ok) {
