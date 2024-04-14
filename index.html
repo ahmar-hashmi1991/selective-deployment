@@ -15,6 +15,21 @@
   <body>
     <h1>Select Microservices to Deploy</h1>
     <form id="microservicesForm">
+      <!-- Server credentials input fields -->
+      <label for="serverHost">Server Host:</label>
+      <input type="text" id="serverHost" name="serverHost" />
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" />
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" />
+      <br />
+      <br />
+
+      <button type="button" onclick="installPrerequisites()">
+        Install Docker
+      </button>
+      <p id="status"></p>
+
       <label
         ><input type="checkbox" name="service" value="redis" /> Redis</label
       >
@@ -23,20 +38,35 @@
       >
       <!-- Add more checkboxes for other microservices -->
 
-      <!-- Server credentials input fields -->
-      <label for="serverHost">Server Host:</label>
-      <input type="text" id="serverHost" name="serverHost" />
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" />
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" />
-
       <button type="button" onclick="deployMicroservices()">
         Deploy Microservices
       </button>
     </form>
 
     <script>
+      function installPrerequisites() {
+        var serverHost = document.getElementById("serverHost").value;
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+        fetch("/install-prerequisites", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            serverHost: serverHost,
+            username: username,
+            password: password,
+          }),
+        })
+          .then((response) => response.json())
+          .then(
+            (data) =>
+              (document.getElementById("status").innerText = data.message)
+          );
+      }
+
       function deployMicroservices() {
         var selectedServices = Array.from(
           document.querySelectorAll('input[name="service"]:checked')
