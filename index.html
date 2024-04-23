@@ -4,8 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Microservices Deployment</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
     <style>
       /* Add some basic styling */
+      .running {
+        color: green;
+      }
+      .stopped {
+        color: red;
+      }
+
       label {
         display: block;
         margin-bottom: 10px;
@@ -41,7 +49,18 @@
       <button type="button" onclick="deployMicroservices()">
         Deploy Microservices
       </button>
+
+      <button type="button" onclick="monitorServices()">
+        Monitor services
+      </button>
     </form>
+
+    <div id="services">
+      <p id="nginx">Nginx: Checking...</p>
+      <button onclick="stopService('nginx')">Stop Nginx</button>
+      <p id="redis">Redis: Checking...</p>
+      <button onclick="stopService('redis')">Stop Redis</button>
+    </div>
 
     <script>
       function installPrerequisites() {
@@ -100,6 +119,39 @@
             alert("Error deploying microservices");
           });
       }
+
+      var socket = io();
+
+      function monitorServices() {
+        var hostname = document.getElementById("serverHost").value;
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        socket.emit("init_connection", { hostname, username, password });
+      }
+
+      function stopService(serviceName) {
+        socket.emit("stop_service", serviceName);
+      }
+
+      socket.on("service_action", function (data) {
+        alert(data.result); // Simple alert, consider a more sophisticated notification system
+      });
+
+      socket.on("service_status", function (data) {
+        console.log(data);
+        for (let service in data) {
+          const status = data[service];
+          const element = document.getElementById(service);
+          if (element) {
+            element.textContent =
+              service.charAt(0).toUpperCase() +
+              service.slice(1) +
+              ": " +
+              status;
+            element.className = status === "Running" ? "running" : "stopped";
+          }
+        }
+      });
     </script>
   </body>
 </html>

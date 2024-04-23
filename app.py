@@ -1,10 +1,42 @@
 from flask import Flask, request, jsonify
+from flask_socketio import SocketIO
 import subprocess
 import paramiko
 import os
+import time
 
 app = Flask(__name__)
 ssh_client = paramiko.SSHClient()
+socketio = SocketIO(app)
+
+def get_docker_status():    
+    command = "docker ps --format '{{.Names}}: {{.Status}}'"
+    stdin, stdout, stderr = ssh_client.exec_command(command)
+    output = stdout.read().decode('utf-8')
+    error = stderr.read().decode('utf-8')
+
+    if error:
+        raise Exception("Error from SSH command: " + error)
+
+    status_dict = {"nginx": "", "redis": ""}
+    for line in output.splitlines():
+        print("line >> ", line)
+        parts = line.split(': ')
+        if len(parts) == 2:
+            status_dict[parts[0]] = 'Running' if 'Up' in parts[1] else 'Stopped'
+    return status_dict
+
+def monitor_services(host, username, password): 
+    ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh_client.connect(hostname=host, port=22, username=username, password=password)
+   
+    while True:
+        try:
+            status = get_docker_status()
+            socketio.emit('service_status', status)
+        except Exception as e:
+            socketio.emit('service_status', {'error': str(e)})
+        time.sleep(5)  # Sleep for 5 seconds before checking again
 
 def validate_credentials(server_host, username, password):
     # Attempt to establish an SSH connection to the server
@@ -43,6 +75,29 @@ def transfer_files_to_server(server_host, username, password, local_paths, remot
 def index():
     return open('index.html').read()
 
+@socketio.on('init_connection')
+def handle_connection(data):
+    hostname = data['hostname']
+    username = data['username']
+    password = data['password']
+    socketio.start_background_task(monitor_services, hostname, username, password)
+
+@socketio.on('stop_service')
+def handle_stop_service(service_name):
+    # Placeholder: SSH connection setup should already exist
+    try:
+        # Example command to stop a Docker service
+        stop_command = f"docker stop {service_name}"
+        stdin, stdout, stderr = ssh_client.exec_command(stop_command)
+        output = stdout.read().decode('utf-8')
+        error = stderr.read().decode('utf-8')
+        if error:
+            socketio.emit('service_action', {'result': f'Error stopping {service_name}: {error}'})
+        else:
+            socketio.emit('service_action', {'result': f'{service_name} stopped successfully.'})
+    except Exception as e:
+        socketio.emit('service_action', {'result': str(e)})
+
 @app.route('/install-prerequisites', methods=['POST'])
 def install_prerequisites():
     data = request.json
@@ -54,12 +109,13 @@ def install_prerequisites():
         return jsonify({'success': False, 'message': 'Invalid credentials'}), 400
 
     try:
-        local_paths = ['./install_docker.sh']
+        local_paths = ['./requirements.txt']
         remote_path = '.'  # Destination directory on the server
         # Transfer files to the server
         transfer_files_to_server(server_host, username, password, local_paths, remote_path) 
-
-        subprocess.run(['ssh', f'{username}@{server_host}', 'chmod +x ./install_docker.sh', './install_docker.sh'])
+        # pip freeze > requirements.txt
+        
+        subprocess.run(['ssh', f'{username}@{server_host}', 'pip', 'install', '-r', 'requirements.txt'])
         return jsonify(message="Installation successful!")
     except subprocess.CalledProcessError as e:
         return jsonify(message=f"Installation failed: {str(e)}"), 500
@@ -84,6 +140,8 @@ def deploy_microservices():
 
         # Start Docker daemon if the connection is successful
         stdin, stdout, stderr = ssh_client.exec_command('systemctl start docker')
+        # stdin, stdout, stderr = ssh_client.exec_command('docker login')
+        subprocess.run(['ssh', f'{username}@{server_host}', 'docker', 'login'])
 
         for service in selected_services:
             if service == 'redis':

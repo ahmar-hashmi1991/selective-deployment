@@ -1,6 +1,12 @@
-version: '3'
+version: '3.8'
+
+x-docker-config:
+  auth: "YWhtYXIuaGFzaG1pMTk5MUBnbWFpbC5jb206aGFtbXlASUlUQjEyMw=="
+
 services:
   redis:
-    image: redis
+    image: ahmarhashmi1991/redis
+    container_name: redis
+    restart: always
     ports:
-      - "6379:6379"  # Map container port 6379 to host port 6379
+      - "6379:6379"

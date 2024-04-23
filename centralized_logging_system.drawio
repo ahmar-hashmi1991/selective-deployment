@@ -1,0 +1,47 @@
+<mxfile host="app.diagrams.net" modified="2024-04-23T08:28:41.768Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36" etag="ypvCWnPyl-lF7GDDtCXz" version="24.2.8" type="device">
+  <diagram name="Page-1" id="9RlvLT56o-S1ZU8tL45Q">
+    <mxGraphModel dx="990" dy="476" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="FoqoGg7YeBVtBysFMGWK-2" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;startSize=8;endSize=8;" edge="1" parent="1" source="FoqoGg7YeBVtBysFMGWK-1" target="FoqoGg7YeBVtBysFMGWK-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="146" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FoqoGg7YeBVtBysFMGWK-1" value="On-premise server&lt;br&gt;(Application)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="66" y="80" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="FoqoGg7YeBVtBysFMGWK-5" value="" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;startSize=8;endSize=8;" edge="1" parent="1" source="FoqoGg7YeBVtBysFMGWK-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="144" y="316" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FoqoGg7YeBVtBysFMGWK-3" value="Fluentd agent" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="66" y="195" width="160" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="FoqoGg7YeBVtBysFMGWK-7" value="" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;startSize=8;endSize=8;" edge="1" parent="1" source="FoqoGg7YeBVtBysFMGWK-4" target="FoqoGg7YeBVtBysFMGWK-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="FoqoGg7YeBVtBysFMGWK-4" value="Azure Event Hubs&lt;br&gt;(Ingestion)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="64" y="316" width="160" height="71" as="geometry" />
+        </mxCell>
+        <mxCell id="FoqoGg7YeBVtBysFMGWK-9" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" edge="1" parent="1" source="FoqoGg7YeBVtBysFMGWK-6" target="FoqoGg7YeBVtBysFMGWK-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="FoqoGg7YeBVtBysFMGWK-6" value="Azure Stream Analytics&lt;br&gt;(Data Processing)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="64" y="434" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="FoqoGg7YeBVtBysFMGWK-11" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;startSize=8;endSize=8;" edge="1" parent="1" source="FoqoGg7YeBVtBysFMGWK-8" target="FoqoGg7YeBVtBysFMGWK-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="FoqoGg7YeBVtBysFMGWK-8" value="Azure Monitor Logs&lt;br&gt;(Data Storage)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="62" y="558" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="FoqoGg7YeBVtBysFMGWK-10" value="Azure Monitor&lt;br&gt;(Data Analysis and Visualization)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="682" width="160" height="66" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

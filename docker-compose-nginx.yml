@@ -1,6 +1,12 @@
-version: '3'
+version: '3.8'
+
+x-docker-config:
+  auth: "=="
+YWhtYXIuaGFzaG1pMTk5MUBnbWFpbC5jb206aGFtbXlASUlUQjEyMw
 services:
   nginx:
-    image: nginx
+    image: ahmarhashmi1991/nginx
+    container_name: nginx
+    restart: always
     ports:
-      - "80:80"  # Map container port 80 to host port 80
+      - "8000:8000"
