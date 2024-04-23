@@ -1,8 +1,8 @@
 version: '3.8'
 
 x-docker-config:
-  auth: "=="
-YWhtYXIuaGFzaG1pMTk5MUBnbWFpbC5jb206aGFtbXlASUlUQjEyMw
+  auth: "YWhtYXIuaGFzaG1pMTk5MUBnbWFpbC5jb206aGFtbXlASUlUQjEyMw=="
+
 services:
   nginx:
     image: ahmarhashmi1991/nginx
