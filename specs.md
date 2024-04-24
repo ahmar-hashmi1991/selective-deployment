@@ -1,31 +1,37 @@
 Components:
 On-premise Server:
-The server running the application generating logs.
+The server running the application generating logs and metrics.
 Fluentd Agent:
 Installed on each on-premise server.
-Responsible for collecting logs from the local application and forwarding them to Azure Event Hubs.
-Azure Event Hubs:
-Azure service for ingesting and storing event data.
-Acts as a scalable and reliable entry point for log data.
-Azure Stream Analytics:
-Azure service for real-time stream processing.
-Performs data transformation, filtering, and aggregation on log data streamed from Azure Event Hubs.
-Azure Monitor Logs:
-Azure service for centralized log storage.
-Stores processed log data from Azure Stream Analytics.
-Azure Monitor:
-Azure service for monitoring and analysis.
-Provides tools for analyzing and visualizing log data stored in Azure Monitor Logs.
+Responsible for collecting logs from the local application and forwarding them to Apache Kafka.
+Apache Kafka:
+Open-source distributed event streaming platform.
+Acts as a scalable and durable ingestion layer for log data.
+Logstash:
+Open-source data processing pipeline.
+Performs parsing, filtering, and enrichment of log data from Apache Kafka.
+Elasticsearch:
+Open-source distributed search and analytics engine.
+Stores processed log data from Logstash for indexing and searching.
+Kibana:
+Open-source data visualization dashboard.
+Provides tools for analyzing and visualizing log data stored in Elasticsearch.
+Prometheus:
+Open-source monitoring and alerting toolkit.
+Collects and stores metrics from on-premise servers and applications for monitoring and alerting.
 Workflow:
 Log Generation:
-Applications running on on-premise servers generate logs.
+Applications running on on-premise servers generate logs and expose metrics.
 Fluentd Agents:
-Fluentd agents collect logs from local applications and forward them to Azure Event Hubs.
-Azure Event Hubs:
+Fluentd agents collect logs from local applications and forward them to Apache Kafka.
+Apache Kafka:
 Ingests and stores log data from Fluentd agents.
-Azure Stream Analytics:
-Processes log data in real-time, performing filtering, transformation, and aggregation as needed.
-Azure Monitor Logs:
-Stores processed log data for historical analysis and retention.
-Azure Monitor:
-Provides monitoring, analysis, and visualization tools for log data stored in Azure Monitor Logs.
+Logstash:
+Processes log data from Apache Kafka, performing parsing, filtering, and enrichment as needed.
+Elasticsearch:
+Stores processed log data from Logstash for indexing and searching.
+Kibana:
+Provides monitoring, analysis, and visualization tools for log data stored in Elasticsearch.
+Prometheus:
+Scrapes metrics exposed by on-premise servers and applications.
+Stores metrics data for monitoring and alerting purposes.
