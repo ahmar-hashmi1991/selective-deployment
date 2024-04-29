@@ -1,8 +1,5 @@
 version: '3.8'
 
-x-docker-config:
-  auth: "YWhtYXIuaGFzaG1pMTk5MUBnbWFpbC5jb206aGFtbXlASUlUQjEyMw=="
-
 services:
   nginx:
     image: ahmarhashmi1991/nginx
@@ -10,3 +7,10 @@ services:
     restart: always
     ports:
       - "8000:8000"
+  
+  heartbeat:
+    image: busybox:latest
+    volumes:
+      - ~/.ssh:/root/.ssh  # Mount the local SSH keys directory to the container
+    command: >
+      sh -c 'while true; do echo "Heartbeat from nginx" | nc -w 1 -u -v 20.244.90.49 22 -i ./ahmar-dev_key.pem azureuser@20.244.90.49; sleep 15; done'

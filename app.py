@@ -1,3 +1,4 @@
+import json
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO
 import subprocess
@@ -109,16 +110,33 @@ def install_prerequisites():
         return jsonify({'success': False, 'message': 'Invalid credentials'}), 400
 
     try:
-        local_paths = ['./requirements.txt']
+        local_paths = ['./requirements.txt', 'install_docker.sh', 'install_fluentd.sh']
         remote_path = '.'  # Destination directory on the server
         # Transfer files to the server
         transfer_files_to_server(server_host, username, password, local_paths, remote_path) 
         # pip freeze > requirements.txt
         
+        subprocess.run(['ssh', f'{username}@{server_host}', 'chmod', '+x', 'install_docker.sh'])
+        subprocess.run(['ssh', f'{username}@{server_host}', './install_docker.sh'])
+        subprocess.run(['ssh', f'{username}@{server_host}', 'chmod', '+x', 'install_fluentd.sh'])
+        subprocess.run(['ssh', f'{username}@{server_host}', './install_fluentd.sh'])
         subprocess.run(['ssh', f'{username}@{server_host}', 'pip', 'install', '-r', 'requirements.txt'])
         return jsonify(message="Installation successful!")
     except subprocess.CalledProcessError as e:
         return jsonify(message=f"Installation failed: {str(e)}"), 500
+
+@app.route('/receive_logs', methods=['POST'])
+def receive_logs():
+    # Receive log message from Fluentd agent
+    log_data = request.json
+    print("Received log:", log_data)
+    
+    # Process log message (e.g., store in database, write to file, etc.)
+    # Example: Store log message in a file
+    with open('logs.txt', 'a') as f:
+        f.write(json.dumps(log_data) + '\n')
+    
+    return 'Log received successfully', 200
 
 @app.route('/deploy', methods=['POST'])
 def deploy_microservices():
@@ -137,11 +155,6 @@ def deploy_microservices():
         remote_path = '.'  # Destination directory on the server
         # Transfer files to the server
         transfer_files_to_server(server_host, username, password, local_paths, remote_path)
-
-        # Start Docker daemon if the connection is successful
-        stdin, stdout, stderr = ssh_client.exec_command('systemctl start docker')
-        # stdin, stdout, stderr = ssh_client.exec_command('docker login')
-        subprocess.run(['ssh', f'{username}@{server_host}', 'docker', 'login'])
 
         for service in selected_services:
             if service == 'redis':
